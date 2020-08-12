@@ -1,0 +1,265 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "API USERS",
+        "description": "API FOR USER MANAGEMENT",
+        "termsOfservice": "http://swagger.io/terms/",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "The MIT License (MIT)",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/",
+            "description": "Local Server"
+        },
+        {
+            "url": "https://api_url_testing",
+            "description": "testing Server"
+        },
+        {
+            "url": "https://api_url_production",
+            "description": "Production Server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "API USERS"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": ["API USERS"],
+                "description": "return message 'HELLO WORLD'",
+                "operationId": "getUsers",
+                "responses": {
+                    "200": {
+                        "description": "Success operatie",
+                        "examples": {
+                            "application/json": [
+                                {
+                                    "message": "HELLO WORLD"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Error of server"
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": ["API USERS"],
+                "description": "get users from database",
+                "operationId": "getUserId",
+                "responses": {
+                    "200": {
+                        "description": "Success operatie",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/UserResponse"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No users"
+                    },
+                    "500": {
+                        "description": "Error of server"
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "tags": ["API USERS"],
+                "description": "get user by id",
+                "operationId": "getUserId",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of user",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success operatie",
+                        "schema": {
+                            "$ref": "#/definitions/UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error, id of user invalid"
+                    },
+                    "404": {
+                        "description": "This user does not exist"
+                    }
+                }
+            }
+        },
+        "/create-user": {
+            "post": {
+                "tags": ["API USERS"],
+                "description": "create user",
+                "operationId": "createUser",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                        {
+                            "in": "body",
+                            "name": "body",
+                            "description": "Data for registerd an user in database",
+                            "required": true,
+                            "schema": {
+                                "$ref": "#/definitions/UserCreated"
+                            }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Error of validation"
+                    },
+                    "500": {
+                        "description":"Error of server"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "put": {
+                "tags": ["API USERS"],
+                "description": "update user",
+                "operationId": "updateUser",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Object to be updated by a user",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Error, id of user invalid"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/userId/{id}": {
+            "delete": {
+                "tag": ["API USERS"],
+                "description": "delete user",
+                "operationId": "deleteUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User id to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Error, id of user invalid"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "UserResponse": {
+            "type": "Object",
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "example": "5f30b9ae589e110c6c6e0185"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "user1"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user1@hotmail.com"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": ["USER_ROLE", "ADMIN_ROLE"],
+                    "example": "USER_ROLE"
+                }
+            }
+        },
+        "UserCreated": {
+            "type": "Object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "user1",
+                    "required": true
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user1@hotmail.com",
+                    "required": true
+                },
+                "role": {
+                    "type": "string",
+                    "enum": ["USER_ROLE", "ADMIN_ROLE"],
+                    "default": "USER_ROLE"
+                } 
+            }
+        },
+        "UserUpdate": {
+            "type": "Object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "5f30b9ae589e110c6c6e0185",
+                    "required": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "user1",
+                    "required": true
+                } 
+            }
+        }
+    }
+}
